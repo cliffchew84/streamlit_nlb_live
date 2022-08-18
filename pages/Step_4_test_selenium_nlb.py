@@ -80,15 +80,12 @@ book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
 next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
 
 for i in range(1,counter-2):
-    try:
-        print(i)
-        time.sleep(5)
-        element = driver.find_element('xpath', next_button)
-        driver.execute_script("arguments[0].click();", element)
-        soup = bs(browser.page_source, 'html5lib')
-        book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
-        time.sleep(2)
-    except:
-        print("end of page")
+    print(i)
+    time.sleep(5)
+    element = driver.find_element('xpath', next_button)
+    driver.execute_script("arguments[0].click();", element)
+    soup = bs(browser.page_source, 'html5lib')
+    book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
+    time.sleep(2)
 
 st.write(book_urls_dict)
