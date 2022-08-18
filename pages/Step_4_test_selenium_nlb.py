@@ -116,7 +116,7 @@ print(f"No of unique books: {len(list_of_book_bids)}")
 
 df = pd.DataFrame()
 bid_w_issues = list()
-for bid_no in tqdm(list_of_book_bids):
+for bid_no in list_of_book_bids:
     try:
         avail_book_obj = make_get_avail_api_call(bid_no)
         avail_book_df = df_get_avail_data(bid_no, avail_book_obj)
