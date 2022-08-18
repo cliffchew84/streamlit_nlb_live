@@ -11,6 +11,11 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import sys
+import numpy as np
+from zeep import Client, helpers
+
+from nlb_api_fun import *
 
 options = Options()
 options.add_argument("--headless")
