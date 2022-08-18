@@ -38,10 +38,7 @@ def log_in_nlb(browser, account_name: str, password: str):
     browser.find_element("xpath", """//*[@id="fm1"]/section/input[4]""").click()
     return browser
 
-from webdriver_manager.chrome import ChromeDriverManager
-
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-
+driver = webdriver.Chrome(options=options)
 log_in_nlb(driver, st.secrets['nlb_login_account'], st.secrets['nlb_login_pw'])
 
 url_link = "https://www.nlb.gov.sg/mylibrary/Bookmarks"
