@@ -19,6 +19,8 @@ options.add_argument("--disable-gpu")
 options.add_argument("--disable-features=NetworkService")
 options.add_argument("--window-size=1920x1080")
 options.add_argument("--disable-features=VizDisplayCompositor")
+options.add_argument('''--user-agent="Mozilla/5.0 (Windows NT 6.1; 
+WOW64; rv:50.0) Gecko/20100101 Firefox/50.0"''')
 
 
 account_name = st.secrets['nlb_login_account']
@@ -80,18 +82,23 @@ book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
 next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
 
 
-# for i in range(1,counter-2):
-#     try:
-#         driver.execute_script('arguments[0].click();', next_button)
-#         time.sleep(2)
+for i in range(1,counter-2):
+    try:
+        time.sleep(8)
+        element = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, next_button)))
+        webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
+        time.sleep(8)
+        soup = bs(driver.page_source)
+        book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
     
-#     except:
-#         st.write(f'{i} error')
-#         time.sleep(10)
-#         driver.execute_script('arguments[0].click();', next_button)
-#         # driver.find_element('xpath', next_button).click() # 2
+    except:
+        print(f'{i} error')
+        time.sleep(8)
+        element = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, next_button)))
+        webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
+        time.sleep(8)
         
-#     soup = bs(driver.page_source)
-#     book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
+        soup = bs(driver.page_source)
+        book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
 
 st.write(book_urls_dict)
