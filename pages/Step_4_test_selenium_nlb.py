@@ -83,7 +83,7 @@ next_button = "//*[contains(text(), 'Next')]"
 for i in range(1,counter-2):
     print(i)
     time.sleep(5)
-    browser.find_element_by_xpath(next_button).click()
+    driver.find_element_by_xpath(next_button).click()
     soup = bs(browser.page_source, 'html5lib')
     book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
     time.sleep(2)
