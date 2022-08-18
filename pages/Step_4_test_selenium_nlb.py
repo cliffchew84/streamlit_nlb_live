@@ -58,3 +58,19 @@ range_list = range(1, int(math.ceil(max_records / 20)) + 1)
 # To indicate when the NEXT button is at
 counter = range_list[-1] + 2
 st.write(counter)
+
+# Scraping the pages
+book_urls_dict = dict()
+time.sleep(5)
+book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
+next_button = "//*[contains(text(), 'Next')]"
+
+for i in range(1,counter-2):
+    print(i)
+    time.sleep(5)
+    browser.find_element_by_xpath(next_button).click()
+    soup = bs(browser.page_source, 'html5lib')
+    book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
+    time.sleep(2)
+
+st.write(book_urls_dict)
