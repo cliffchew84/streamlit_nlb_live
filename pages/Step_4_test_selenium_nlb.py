@@ -2,6 +2,7 @@ import os
 import re
 import time
 import math
+import pandas as pd
 import streamlit as st
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
