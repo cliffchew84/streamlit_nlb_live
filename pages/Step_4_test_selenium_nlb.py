@@ -44,6 +44,21 @@ def log_in_nlb(browser, account_name: str, password: str):
     browser.find_element("xpath", """//*[@id="fm1"]/section/input[4]""").click()
     return browser
 
+
+def get_book_urls_on_page(soup):
+    """ Getting book urls from page for NLB project 
+    Args: BeautifulSoup Object
+    Returns: List of book urls (list)
+    
+    """
+
+    book_urls_list = list()
+    for a in soup.find_all('a', href=True):
+        if "catalogue" in a['href']:
+            book_urls_list.append(a['href'])
+    return book_urls_list
+
+## Actualy scraping
 driver = webdriver.Chrome(options=options)
 log_in_nlb(driver, account_name, password)
 
