@@ -50,7 +50,7 @@ log_in_nlb(driver, account_name, password)
 url_link = "https://www.nlb.gov.sg/mylibrary/Bookmarks"
 driver.get(url_link)
 time.sleep(5)
-soup = bs(driver.page_source, 'html5lib')
+soup = bs(driver.page_source)
 
 max_records = float(soup.find_all("div", text=re.compile("Showing"))[0].text.split(" ")[-2])
 range_list = range(1, int(math.ceil(max_records / 20)) + 1)
