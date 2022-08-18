@@ -78,7 +78,7 @@ st.write(counter)
 book_urls_dict = dict()
 time.sleep(5)
 book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
-next_button = f"""//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]"""
+next_button = f"""//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a"""
 
 for i in range(1,counter-2):
     print(i)
