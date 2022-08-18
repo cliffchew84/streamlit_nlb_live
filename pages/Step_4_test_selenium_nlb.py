@@ -22,7 +22,7 @@ options.add_argument("--disable-features=VizDisplayCompositor")
 
 
 account_name = st.secrets['nlb_login_account']
-passowrd = st.secrets['nlb_login_pw']
+password = st.secrets['nlb_login_pw']
 
 
 def log_in_nlb(browser, account_name: str, password: str):
