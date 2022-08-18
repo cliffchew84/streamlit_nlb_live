@@ -64,7 +64,7 @@ log_in_nlb(driver, account_name, password)
 
 url_link = "https://www.nlb.gov.sg/mylibrary/Bookmarks"
 driver.get(url_link)
-time.sleep(5)
+time.sleep(10)
 soup = bs(driver.page_source)
 
 max_records = float(soup.find_all("div", text=re.compile("Showing"))[0].text.split(" ")[-2])
@@ -76,9 +76,8 @@ st.write(counter)
 
 # Scraping the pages
 book_urls_dict = dict()
-time.sleep(5)
 book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
-next_button = f"""//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a"""
+next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
 
 for i in range(1,counter-2):
     try:
