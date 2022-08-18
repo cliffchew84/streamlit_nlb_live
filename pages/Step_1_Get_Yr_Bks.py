@@ -1,8 +1,8 @@
 import os
+import sys
 import numpy as np
 import pandas as pd
 import streamlit as st
-from sys import platform
 
 from bs4 import BeautifulSoup as bs
 from zeep import Client, helpers
@@ -12,6 +12,14 @@ import time
 import re
 
 from nlb_api_fun import *
+
+@st.experimental_singleton
+def installff():
+    os.system('sudo ln -sf /home/appuser/.tagui/src/tagui /usr/local/bin/tagui')
+    os.system('tagui /home/appuser/.tagui/src/tagui/flows/samples/1_google.tag')
+
+_ = installff()
+
 
 pd.set_option('display.max_colwidth',None)
 
@@ -29,7 +37,7 @@ def rpa_nlb_login(account_name, pw):
     return r
 
 ############ Either use secrets from Streamlit or from my own system ############
-if platform == "darwin":
+if sys.platform == "darwin":
     API = os.environ['nlb_api_keys']
 
 else:
