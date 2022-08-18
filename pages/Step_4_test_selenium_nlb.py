@@ -2,6 +2,7 @@ import os
 import re
 import time
 import math
+import streamlit as st
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.by import By
@@ -18,6 +19,11 @@ options.add_argument("--disable-gpu")
 options.add_argument("--disable-features=NetworkService")
 options.add_argument("--window-size=1920x1080")
 options.add_argument("--disable-features=VizDisplayCompositor")
+
+
+account_name = st.secrets['nlb_login_account']
+passowrd = st.secrets['nlb_login_pw']
+
 
 def log_in_nlb(browser, account_name: str, password: str):
     """ Logins into the NLB app, and returns selenium browser object
@@ -39,7 +45,7 @@ def log_in_nlb(browser, account_name: str, password: str):
     return browser
 
 driver = webdriver.Chrome(options=options)
-log_in_nlb(driver, st.secrets['nlb_login_account'], st.secrets['nlb_login_pw'])
+log_in_nlb(driver, account_name, password)
 
 url_link = "https://www.nlb.gov.sg/mylibrary/Bookmarks"
 driver.get(url_link)
