@@ -134,14 +134,14 @@ my_bar = st.progress(0)
 
 for i, bid_no in enumerate(list_of_book_bids):
     # try:
-    avail_book_obj = make_get_avail_api_call(bid_no)
+    avail_book_obj = make_get_avail_api_call(API, bid_no)
     avail_book_df = df_get_avail_data(bid_no, avail_book_obj)
 
     title_detail_obj = make_get_title_details_api_call(bid_no)
     title_detail_df = df_get_title_data(title_detail_obj)
     
     final_book_df = final_book_avail_df(avail_book_df, title_detail_df)
-    final_book_df['url'] = return_needed_url(bid_no)
+    final_book_df['url'] = return_needed_url(API, bid_no)
     
     df = df.append(final_book_df)
     my_bar.progress(i/max_books)
@@ -151,8 +151,6 @@ for i, bid_no in enumerate(list_of_book_bids):
     #     my_bar.progress(i/max_books)
 
 df = df.to_csv(index=False).encode('utf-8')
-
-
 
 st.download_button(
     label="Download your bookmarked books",
