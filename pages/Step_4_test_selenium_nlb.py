@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 options = Options()
-# options.add_argument("--headless")
+options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
@@ -81,11 +81,14 @@ book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
 next_button = f"""//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a"""
 
 for i in range(1,counter-2):
-    print(i)
-    time.sleep(20)
-    driver.find_element('xpath', next_button).click()
-    soup = bs(browser.page_source, 'html5lib')
-    book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
-    time.sleep(2)
+    try:
+        print(i)
+        time.sleep(10)
+        driver.find_element('xpath', next_button).click()
+        soup = bs(browser.page_source, 'html5lib')
+        book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
+        time.sleep(2)
+    except:
+        print("end of page")
 
 st.write(book_urls_dict)
