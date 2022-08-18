@@ -17,6 +17,12 @@ from zeep import Client, helpers
 
 from nlb_api_fun import *
 
+if sys.platform == "darwin":
+    API = os.environ['nlb_api_keys']
+
+else:
+    API = st.secrets['nlb_api_keys']
+
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--no-sandbox")
