@@ -15,4 +15,4 @@ chrome_options.add_argument(" -–disable-web-security")
 chrome_options.add_argument("--no-sandbox") 
 
 webdriver.Chrome(
-    ChromeDriverManager().install(), chrome_options=chrome_options)
+    executable_path='chromedriver.exe', chrome_options=chrome_options)
