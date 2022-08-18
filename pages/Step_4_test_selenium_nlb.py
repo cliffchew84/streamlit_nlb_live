@@ -2,8 +2,12 @@ import os
 import re
 import time
 import math
+import sys
+import numpy as np
 import pandas as pd
 import streamlit as st
+from zeep import Client, helpers
+
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.by import By
@@ -11,9 +15,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-import sys
-import numpy as np
-from zeep import Client, helpers
 
 from nlb_api_fun import *
 
@@ -22,6 +23,10 @@ if sys.platform == "darwin":
 
 else:
     API = st.secrets['nlb_api_keys']
+
+account_name = st.secrets['nlb_login_account']
+password = st.secrets['nlb_login_pw']
+
 
 options = Options()
 options.add_argument("--headless")
@@ -33,10 +38,6 @@ options.add_argument("--window-size=1920x1080")
 options.add_argument("--disable-features=VizDisplayCompositor")
 options.add_argument('''--user-agent="Mozilla/5.0 (Windows NT 6.1; 
 WOW64; rv:50.0) Gecko/20100101 Firefox/50.0"''')
-
-
-account_name = st.secrets['nlb_login_account']
-password = st.secrets['nlb_login_pw']
 
 
 def log_in_nlb(driver, account_name: str, password: str):
@@ -72,7 +73,7 @@ def get_book_urls_on_page(soup):
             book_urls_list.append(a['href'])
     return book_urls_list
 
-## Actualy scraping
+## Apply scraping
 driver = webdriver.Chrome(options=options)
 log_in_nlb(driver, account_name, password)
 
@@ -86,14 +87,14 @@ range_list = range(1, int(math.ceil(max_records / 20)) + 1)
 
 # To indicate when the NEXT button is at
 counter = range_list[-1] + 2
-st.write(counter)
+st.markdown(f"{range_list}")
 
 # Scraping the pages
 book_urls_dict = dict()
 book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
 next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
 
-
+# Convoluted way of extracting data
 for i in range(1,counter-2):
     try:
         time.sleep(8)
@@ -113,7 +114,8 @@ for i in range(1,counter-2):
         soup = bs(driver.page_source)
         book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
 
-# st.write(book_urls_dict)
+# Produce out all my urls
+st.write(book_urls_dict)
 
 all_book_url_lists = list()
 for i in range(0, len(book_urls_dict)):
@@ -121,10 +123,10 @@ for i in range(0, len(book_urls_dict)):
 
 unique_books = set(all_book_url_lists)
 list_of_book_bids = [re.findall(r'\d+', i)[-1] for i in list(unique_books)]
-print(f"No of unique books: {len(list_of_book_bids)}")
+st.write(f"No of unique books: {len(list_of_book_bids)}")
 
-# bid_no = list_of_book_bids[0]
 
+st.markdown("### Combining different datasets")
 df = pd.DataFrame()
 bid_w_issues = list()
 
