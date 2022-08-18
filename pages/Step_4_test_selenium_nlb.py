@@ -127,7 +127,10 @@ print(f"No of unique books: {len(list_of_book_bids)}")
 
 df = pd.DataFrame()
 bid_w_issues = list()
-for bid_no in list_of_book_bids:
+
+my_bar = st.progress(0)
+
+for i, bid_no in enumerate(list_of_book_bids):
     # try:
     avail_book_obj = make_get_avail_api_call(bid_no)
     avail_book_df = df_get_avail_data(bid_no, avail_book_obj)
@@ -139,8 +142,11 @@ for bid_no in list_of_book_bids:
     final_book_df['url'] = return_needed_url(bid_no)
     
     df = df.append(final_book_df)
+    my_bar.progress(i/max_books)
+    
     # except:
-        # bid_w_issues.append(bid_no)
+    #     bid_w_issues.append(bid_no)
+    #     my_bar.progress(i/max_books)
 
 df = df.to_csv(index=False).encode('utf-8')
 
