@@ -90,7 +90,7 @@ for i in range(1,counter-2):
         time.sleep(10)
         driver.find_element('xpath', next_button).click()
         
-    soup = bs(driver.page_source, 'html5lib')
+    soup = bs(driver.page_source)
     book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
 
 st.write(book_urls_dict)
