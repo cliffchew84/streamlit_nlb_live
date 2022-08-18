@@ -25,24 +25,24 @@ account_name = st.secrets['nlb_login_account']
 password = st.secrets['nlb_login_pw']
 
 
-def log_in_nlb(browser, account_name: str, password: str):
-    """ Logins into the NLB app, and returns selenium browser object
+def log_in_nlb(driver, account_name: str, password: str):
+    """ Logins into the NLB app, and returns selenium driver object
     """
 
     # Go login page
-    browser.get('https://cassamv2.nlb.gov.sg/cas/login')
+    driver.get('https://cassamv2.nlb.gov.sg/cas/login')
     time.sleep(1)
     
     account_info = [account_name, password]
     tag_info = ["""//*[@id="username"]""", """//*[@id="password"]"""]
     
     for info, tag in zip(account_info, tag_info):
-        browser.find_element("xpath", tag).send_keys("{}".format(info))
+        driver.find_element("xpath", tag).send_keys("{}".format(info))
         time.sleep(1)
     
     # Click login
-    browser.find_element("xpath", """//*[@id="fm1"]/section/input[4]""").click()
-    return browser
+    driver.find_element("xpath", """//*[@id="fm1"]/section/input[4]""").click()
+    return driver
 
 
 def get_book_urls_on_page(soup):
@@ -79,22 +79,18 @@ book_urls_dict = dict()
 book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
 next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
 
-try:
-    driver.find_element('xpath', next_button).click()
-except:
-    pass
 
 for i in range(1,counter-2):
     try:
-        driver.find_element('xpath', next_button).click().click()
+        driver.find_element('xpath', next_button).click()
+        time.sleep(2)
+    
     except:
-        st.write(f'{i} error')
-        pass
-    
-    driver.find_element('xpath', next_button).click()
-    
+        print(f'{i} error')
+        time.sleep(10)
+        driver.find_element('xpath', next_button).click()
+        
     soup = bs(driver.page_source, 'html5lib')
     book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
-    time.sleep(2)
 
 st.write(book_urls_dict)
