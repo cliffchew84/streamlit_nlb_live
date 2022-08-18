@@ -82,7 +82,7 @@ next_button = f"""//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a"""
 
 for i in range(1,counter-2):
     print(i)
-    time.sleep(5)
+    time.sleep(20)
     driver.find_element('xpath', next_button).click()
     soup = bs(browser.page_source, 'html5lib')
     book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
