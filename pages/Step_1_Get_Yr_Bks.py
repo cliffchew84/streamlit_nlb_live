@@ -13,14 +13,6 @@ import re
 
 from nlb_api_fun import *
 
-@st.experimental_singleton
-def installff():
-    os.system('sudo ln -sf /home/appuser/.tagui/src/tagui /usr/local/bin/tagui')
-    os.system('tagui /home/appuser/.tagui/src/tagui/flows/samples/1_google.tag')
-
-_ = installff()
-
-
 pd.set_option('display.max_colwidth',None)
 
 ## Methods

@@ -101,4 +101,40 @@ for i in range(1,counter-2):
         soup = bs(driver.page_source)
         book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
 
-st.write(book_urls_dict)
+# st.write(book_urls_dict)
+
+all_book_url_lists = list()
+for i in range(0, len(book_urls_dict)):
+    all_book_url_lists = all_book_url_lists + book_urls_dict[i]
+
+unique_books = set(all_book_url_lists)
+list_of_book_bids = [re.findall(r'\d+', i)[-1] for i in list(unique_books)]
+print(f"No of unique books: {len(list_of_book_bids)}")
+
+# bid_no = list_of_book_bids[0]
+
+df = pd.DataFrame()
+bid_w_issues = list()
+for bid_no in tqdm(list_of_book_bids):
+    try:
+        avail_book_obj = make_get_avail_api_call(bid_no)
+        avail_book_df = df_get_avail_data(bid_no, avail_book_obj)
+
+        title_detail_obj = make_get_title_details_api_call(bid_no)
+        title_detail_df = df_get_title_data(title_detail_obj)
+        
+        final_book_df = final_book_avail_df(avail_book_df, title_detail_df)
+        final_book_df['url'] = return_needed_url(bid_no)
+        
+        df = df.append(final_book_df)
+    except:
+        bid_w_issues.append(bid_no)
+
+df = df.to_csv(index=False).encode('utf-8')
+        
+st.download_button(
+    label="Download your bookmarked books",
+    data=df,
+    file_name="bookmarked_books.csv",
+    mime="text/csv"
+)
