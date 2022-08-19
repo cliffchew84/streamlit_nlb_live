@@ -66,89 +66,115 @@ def get_book_urls_on_page(soup):
             book_urls_list.append(a['href'])
     return book_urls_list
 
-## Apply scraping
-driver = webdriver.Chrome(options=options)
-log_in_nlb(driver, account_name, password)
+############ Actual code ############
 
-url_link = "https://www.nlb.gov.sg/mylibrary/Bookmarks"
-driver.get(url_link)
-time.sleep(5)
-soup = bs(driver.page_source)
+with st.form("my_form"):
+    account_name = st.text_input("NLB User Name")
+    password = st.text_input("NLB Password", type='password')
 
-max_records = float(soup.find_all("div", text=re.compile("Showing"))[0].text.split(" ")[-2])
-range_list = range(1, int(math.ceil(max_records / 20)) + 1)
+    submitted = st.form_submit_button("Extract Data")
 
-# To indicate when the NEXT button is at
-counter = range_list[-1] + 2
-st.markdown(f"{range_list}")
+st.markdown(""" 
+    ##### Things to Note:
+    1. ***We respect your privacy! We do not store your data!***
+    1. Do not click on the other parts of this web app until the extraction is complete. If not, the extraction will stop and you have to restart your extraction. Unfortunately, the web app is still a bit slow. You can look at other tabs of your browser. 
+    1. Once the extraction is complete, a `Download CSV` button will pop up for you to download the data into your laptop or phone.
+    1. Upload this data into Step 2 to review the locations of the books available.
+""")
 
-# Scraping the pages
-book_urls_dict = dict()
-book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
-next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
+try:
+    if submitted:
+        st.markdown("""---""")
+        # NLB login
+        with st.spinner(text="Logging into NLB..."):
+            ## Apply scraping
+            driver = webdriver.Chrome(options=options)
+            log_in_nlb(driver, account_name, password)
 
-# Convoluted way of extracting data
-for i in range(1,counter-2):
-    try:
-        time.sleep(8)
-        element = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, next_button)))
-        webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
-        time.sleep(8)
+        url_link = "https://www.nlb.gov.sg/mylibrary/Bookmarks"
+        driver.get(url_link)
+        time.sleep(5)
         soup = bs(driver.page_source)
-        book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
-    
-    except:
-        print(f'{i} error')
-        time.sleep(8)
-        element = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, next_button)))
-        webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
-        time.sleep(8)
-        
-        soup = bs(driver.page_source)
-        book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
 
-# Produce out all my urls
-st.write(book_urls_dict)
+        max_records = float(soup.find_all("div", text=re.compile("Showing"))[0].text.split(" ")[-2])
+        range_list = range(1, int(math.ceil(max_records / 20)) + 1)
 
-all_book_url_lists = list()
-for i in range(0, len(book_urls_dict)):
-    all_book_url_lists = all_book_url_lists + book_urls_dict[i]
+        # To indicate when the NEXT button is at
+        counter = range_list[-1] + 2
+        st.markdown(f"{range_list}")
 
-unique_books = set(all_book_url_lists)
-list_of_book_bids = [re.findall(r'\d+', i)[-1] for i in list(unique_books)]
-st.write(f"No of unique books: {len(list_of_book_bids)}")
+        # Scraping the pages
+        book_urls_dict = dict()
+        book_urls_dict[0] = list(set(get_book_urls_on_page(soup)))
+        next_button = f'//*[@id="bookmark-folder-content"]/nav/ul/li[{counter}]/a'
 
+        # Convoluted way of extracting data
+        for i in range(1,counter-2):
+            try:
+                time.sleep(8)
+                element = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, next_button)))
+                webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
+                time.sleep(8)
+                soup = bs(driver.page_source)
+                book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
+            
+            except:
+                print(f'{i} error')
+                time.sleep(8)
+                element = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, next_button)))
+                webdriver.ActionChains(driver).move_to_element(element ).click(element ).perform()
+                time.sleep(8)
+                
+                soup = bs(driver.page_source)
+                book_urls_dict[i] = list(set(get_book_urls_on_page(soup)))
 
-st.markdown("### Combining different datasets")
-df = pd.DataFrame()
-bid_w_issues = list()
+        # Produce out all my urls
+        all_book_url_lists = list()
+        for i in range(0, len(book_urls_dict)):
+            all_book_url_lists = all_book_url_lists + book_urls_dict[i]
 
-my_bar = st.progress(0)
-max_books = len(list_of_book_bids)
+        unique_books = set(all_book_url_lists)
+        list_of_book_bids = [re.findall(r'\d+', i)[-1] for i in list(unique_books)]
+        st.write(f"No of unique books: {len(list_of_book_bids)}")
 
-for i, bid_no in enumerate(list_of_book_bids):
-    try:
-        avail_book_obj = make_get_avail_api_call(API, bid_no)
-        avail_book_df = df_get_avail_data(bid_no, avail_book_obj)
+        st.markdown("### Combining different datasets")
+        df = pd.DataFrame()
+        bid_w_issues = list()
 
-        title_detail_obj = make_get_title_details_api_call(API, bid_no)
-        title_detail_df = df_get_title_data(title_detail_obj)
-        
-        final_book_df = final_book_avail_df(avail_book_df, title_detail_df)
-        final_book_df['url'] = return_needed_url(bid_no)
-        
-        df = df.append(final_book_df)
-        my_bar.progress(i / max_books)
-    
-    except:
-        bid_w_issues.append(bid_no)
-        my_bar.progress(i / max_books)
+        my_bar = st.progress(0)
+        max_books = len(list_of_book_bids)
 
-df = df.to_csv(index=False).encode('utf-8')
+        for i, bid_no in enumerate(list_of_book_bids):
+            try:
+                avail_book_obj = make_get_avail_api_call(API, bid_no)
+                avail_book_df = df_get_avail_data(bid_no, avail_book_obj)
 
-st.download_button(
-    label="Download your bookmarked books",
-    data=df,
-    file_name="bookmarked_books.csv",
-    mime="text/csv"
-)
+                title_detail_obj = make_get_title_details_api_call(API, bid_no)
+                title_detail_df = df_get_title_data(title_detail_obj)
+                
+                final_book_df = final_book_avail_df(avail_book_df, title_detail_df)
+                final_book_df['url'] = return_needed_url(bid_no)
+                
+                df = pd.concat([df, final_book_df])
+                my_bar.progress(i / max_books)
+            
+            except:
+                bid_w_issues.append(bid_no)
+                my_bar.progress(i / max_books)
+
+        df = df.to_csv(index=False).encode('utf-8')
+
+        st.download_button(
+            label="Download your bookmarked books",
+            data=df,
+            file_name="bookmarked_books.csv",
+            mime="text/csv"
+        )
+
+except:
+    st.markdown("""
+        <span style="color:red">
+            ***There is an issue with your account name or password.
+            Please try again.***
+        </span>
+        """, unsafe_allow_html=True)
