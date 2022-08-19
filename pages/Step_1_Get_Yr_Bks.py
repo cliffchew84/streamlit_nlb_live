@@ -137,7 +137,7 @@ with st.form("my_form"):
 st.markdown(""" 
     ##### Things to Note:
     1. ***We respect your privacy! We do not store your data!***
-    1. Do not click on the other parts of this web app until the extraction is complete. If not, the extraction will stop and you have to restart your extraction. Unfortunately, the web app is still a bit slow. You can look at other tabs of your browser. 
+    1. **Do not go to the other parts of the web app until the extraction is complete.** If not, the extraction will stop and you have to restart your extraction. The speed of the extraction depends on how many books you have in your Favorites section. **You can look at other tabs of your browser while the extraction is happening.** 
     1. Once the extraction is complete, a `Download CSV` button will pop up for you to download the data into your laptop or phone.
     1. Upload this data into Step 2 to review the locations of the books available.
 """)
