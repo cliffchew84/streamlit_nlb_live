@@ -124,6 +124,7 @@ df = pd.DataFrame()
 bid_w_issues = list()
 
 my_bar = st.progress(0)
+max_books = len(list_of_book_bids)
 
 for i, bid_no in enumerate(list_of_book_bids):
     try:
@@ -137,11 +138,11 @@ for i, bid_no in enumerate(list_of_book_bids):
         final_book_df['url'] = return_needed_url(bid_no)
         
         df = df.append(final_book_df)
-        my_bar.progress(i/max_books)
+        my_bar.progress(i / max_books)
     
     except:
         bid_w_issues.append(bid_no)
-        my_bar.progress(i/max_books)
+        my_bar.progress(i / max_books)
 
 df = df.to_csv(index=False).encode('utf-8')
 
