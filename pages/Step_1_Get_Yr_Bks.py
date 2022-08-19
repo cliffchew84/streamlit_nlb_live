@@ -233,9 +233,6 @@ try:
             mime="text/csv"
         )
 
-    if download:
-        st.write("Congrats on getting your data!")
-
 except:
     st.markdown("""
         <span style="color:red">
