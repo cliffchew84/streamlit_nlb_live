@@ -27,7 +27,7 @@ Recently, I learned about the NLB open API, and managed to get access to it. Her
 ### TO-DOs by me
 1. ~Add login section~
 1. ~Add better descriptions and prompts for Data Extraction Page~
-1. Upload onto Streamlit Cloud
+1. ~Upload onto Streamlit Cloud~
 1. Add Google Analytics Tracker for user analytics
 """)
 
