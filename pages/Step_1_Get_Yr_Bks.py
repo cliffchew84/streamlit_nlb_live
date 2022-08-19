@@ -226,12 +226,15 @@ try:
 
         df = df.to_csv(index=False).encode('utf-8')
 
-        st.download_button(
+        download = st.download_button(
             label="Download your bookmarked books",
             data=df,
             file_name="bookmarked_books.csv",
             mime="text/csv"
         )
+
+    if download:
+        st.write("Congrats on getting your data!")
 
 except:
     st.markdown("""
