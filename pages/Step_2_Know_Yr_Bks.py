@@ -15,6 +15,20 @@ if uploaded_file is not None:
     
     ft.columns = ["library", 'title', "number", 'avail', 'url']
 
+    unique_bks = len(ft.title.drop_duplicates().tolist())
+    unique_avail_bks = len(ft[ft.avail == 'Not on Loan'].title.drop_duplicates().tolist())
+
+    st.markdown(f"### Summary of your NLB Favorites")
+    # available_unique_bks = len(ft[ft.avail].title.drop_duplicates().tolist())
+    st.markdown(f"""
+        1. {unique_bks} unique books
+        2. {unique_avail_bks} unique available books
+    """)
+    top_few = pd.DataFrame(ft[ft.avail == 'Not on Loan'].library.value_counts()).head()
+    st.markdown(f""" {top_few} """)
+
+    
+
     # Second phase of dataset processing
     ft.loc[ft.library == "Repository Used Book Collection", 'avail'] = "For Reference Only"
     ft = ft[ft.avail == "Not on Loan"]
