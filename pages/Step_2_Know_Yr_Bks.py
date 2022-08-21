@@ -19,16 +19,18 @@ if uploaded_file is not None:
     unique_avail_bks = len(ft[ft.avail == 'Not on Loan'].title.drop_duplicates().tolist())
 
     st.markdown(f"### Summary of your NLB Favorites")
-    # available_unique_bks = len(ft[ft.avail].title.drop_duplicates().tolist())
     st.markdown(f"""
-        1. {unique_bks} unique books
-        2. {unique_avail_bks} unique available books
+        1. {unique_bks} unique books are found in your NLB Favorites
+        2. And {unique_avail_bks} of them are available in some library!!
     """)
     top_few = pd.DataFrame(ft[ft.avail == 'Not on Loan'].library.value_counts()).head()
-    st.markdown(f""" {top_few} """)
-
     
+    st.markdown(f"#### Top 5 libraries with your available favorite books!")
+    top_few_print = top_few.to_html(escape=False)
 
+    st.write(top_few_print, unsafe_allow_html=True)
+    st.markdown(f"---")
+    
     # Second phase of dataset processing
     ft.loc[ft.library == "Repository Used Book Collection", 'avail'] = "For Reference Only"
     ft = ft[ft.avail == "Not on Loan"]
