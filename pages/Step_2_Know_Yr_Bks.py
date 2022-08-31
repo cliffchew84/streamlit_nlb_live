@@ -23,7 +23,8 @@ if uploaded_file is not None:
         1. {unique_bks} unique books are found in your NLB Favorites
         2. And {unique_avail_bks} of them are available in some library!!
     """)
-    top_few = pd.DataFrame(ft[ft.avail == 'Not on Loan'].library.value_counts()).head()
+    top_few = ft[ft.avail == 'Not on Loan'].drop_duplicates()
+    top_few = pd.DataFrame(top_few.library.value_counts()).head()
     
     st.markdown(f"#### Top 5 libraries with your available favorite books!")
     top_few_print = top_few.to_html(escape=False)
