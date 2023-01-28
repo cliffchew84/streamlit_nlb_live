@@ -106,12 +106,12 @@ def get_book_urls_on_page(soup):
     for a in soup.find_all('a', href=True):
         if "catalogue" in a['href']:
             book_urls_list.append(a['href'])
+        elif "https://go.nlb.gov.sg" in a['href']:
+            book_urls_list.append(a['href'])
     return book_urls_list
 
 #### Parameters
 API = st.secrets['nlb_api_keys']
-account_name = st.secrets['nlb_login_account']
-password = st.secrets['nlb_login_pw']
 
 # Web scraping parameters
 options = Options()
@@ -124,7 +124,6 @@ options.add_argument("--window-size=1920x1080")
 options.add_argument("--disable-features=VizDisplayCompositor")
 options.add_argument('''--user-agent="Mozilla/5.0 (Windows NT 6.1; 
 WOW64; rv:50.0) Gecko/20100101 Firefox/50.0"''')
-
 
 ############ Actual code ############
 
