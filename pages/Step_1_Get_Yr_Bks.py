@@ -1,3 +1,4 @@
+import sys 
 import os
 import re
 import math
@@ -109,13 +110,15 @@ def get_book_urls_on_page(soup):
     return book_urls_list
 
 #### Parameters
-API = st.secrets['nlb_api_keys']
-account_name = st.secrets['nlb_login_account']
-password = st.secrets['nlb_login_pw']
+if sys.platform == "darwin":
+    API = os.environ['nlb_api_keys']
+
+else:
+    API = st.secrets['nlb_api_keys']
 
 # Web scraping parameters
 options = Options()
-options.add_argument("--headless")
+# options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-gpu")
@@ -161,8 +164,7 @@ try:
             range_list = range(1, int(math.ceil(max_records / 20)) + 1)
 
             # To indicate when the NEXT button is at
-            counter = range_list[-1] + 2
-            st.markdown(f"{range_list}")
+            counter = range_list[-1] + 2 
 
         with st.spinner(text="Getting books..."):
             # Scraping the pages
