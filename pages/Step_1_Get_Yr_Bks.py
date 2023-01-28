@@ -1,4 +1,3 @@
-import sys 
 import os
 import re
 import math
@@ -111,6 +110,8 @@ def get_book_urls_on_page(soup):
 
 #### Parameters
 API = st.secrets['nlb_api_keys']
+account_name = st.secrets['nlb_login_account']
+password = st.secrets['nlb_login_pw']
 
 # Web scraping parameters
 options = Options()
