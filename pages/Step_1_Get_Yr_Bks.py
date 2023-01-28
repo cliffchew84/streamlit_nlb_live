@@ -110,11 +110,7 @@ def get_book_urls_on_page(soup):
     return book_urls_list
 
 #### Parameters
-if sys.platform == "darwin":
-    API = os.environ['nlb_api_keys']
-
-else:
-    API = st.secrets['nlb_api_keys']
+API = st.secrets['nlb_api_keys']
 
 # Web scraping parameters
 options = Options()
